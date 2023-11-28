@@ -1,0 +1,60 @@
+.code
+
+j print ;(offset)  goto, if, loops,. next part identify the location of this so
+ 		; compute the location of this print
+		;this transform to binary format ---> 0000 0000 0000 000A == r1
+		;printf("hello");
+		; J is the "Branch Delay Slot"
+		; basahin sa niya ang BDS before mo adtu sa print
+		;exp. daddiu r2,r0,10
+		; executes the J before proceeding to print
+		;We can say that this is a BDS if there is control transfer instruction
+		; but not all control transfer intruction makaexecute sa BDS
+		
+;daddiu r2,r0,10
+;print: daddiu r1,r0,10 ;address of daddiu is 3 for 0.1.2.3. entirely in address 3
+
+APPLICATION
+
+loop:
+
+dadiu r1,r0,1	;initial
+daddiu r2,r0,5	;kung asa siya taman
+
+dadd r3,r3,r1 ; increment
+bne r3,r2,loop; ne -> not equa;
+
+;r3=0 != r2=5
+;r3 = 0000 0000 0000 0005
+
+=================
+
+
+.data
+
+input: .asciiz "Hello"
+.space 8		; kani buhaton para dili magoverflow ang input
+			;Space is necessary if it contains large problem
+output: .asciiz ""
+
+.code
+
+daddiu r1,r0,1
+daddiu r2,r0,5	; 5 determines the length of the input "Hello"
+ 
+;Activity==> dynamic in nature ang lenght of the input
+
+loop:
+
+;dadd r3,r3,r1
+;bne r3,r2,loop
+
+;load byte and store byte para mamove
+
+lb r4, input(r1) ; iya geh butang ang value sa H sa r4
+sb r4,output(r3)
+dadd r3,r3,r1 	;increment
+bne r3,r2,loop
+
+
+

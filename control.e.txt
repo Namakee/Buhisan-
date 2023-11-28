@@ -1,0 +1,5 @@
+.code
+
+j print
+daddiu r2,r0,10
+;print: daddiu r1,r0,10

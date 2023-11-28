@@ -1,0 +1,42 @@
+CREATE TABLE Customers (
+	c_id serial PRIMARY KEY,
+	f_name varchar (50),
+	l_name varchar (50),
+	gender varchar (50)
+);
+
+insert into customers (f_name,l_name,gender)values
+('Carl','Gascon','Male'),
+('Hello','World','female'),
+('Hi','Galaxy','Male')
+;
+DROP TABLE Customers;
+
+Select f_name,l_name,gender FROM customers;
+
+CREATE OR REPLACE FUNCTION retrieve_customers_data(in_name varchar)
+RETURNS TABLE (
+    out_fname varchar(50),
+    out_lname varchar(50),
+    out_gender varchar(50)
+)
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (
+        SELECT f_name, l_name, gender FROM customers WHERE f_name = in_name
+    )
+    LOOP
+        out_fname := r.f_name;
+        out_lname := r.l_name;
+        out_gender := r.gender;
+        RETURN NEXT;
+    END LOOP;
+END;
+$$;
+
+SELECT * FROM retrieve_customers_data('Carl');
+
+DROP FUNCTION retrieve_customers_data()

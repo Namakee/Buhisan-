@@ -1,0 +1,60 @@
+-- Create Employees table
+CREATE TABLE Employees (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(255)
+);
+
+-- Insert data into Employees table
+INSERT INTO Employees (ID, Name) VALUES
+(100, 'Alan D.'),
+(101, 'Renner G'),
+(102, 'John H.'),
+(103, 'Leah E.');
+
+-- Create Transactions table
+CREATE TABLE Transactions (
+    ID INT PRIMARY KEY,
+    Employee INT,
+    Sales DECIMAL(10, 2),
+    FOREIGN KEY (Employee) REFERENCES Employees(ID)
+);
+
+-- Insert data into Transactions table
+INSERT INTO Transactions (ID, Employee, Sales) VALUES
+(1, 100, 2500.00),
+(2, 100, 6500.00),
+(3, 102, 3000.00),
+(4, 101, 4500.00),
+(5, 102, 1400.00);
+
+-- A
+SELECT
+  E.Name,
+  COALESCE(SUM(T.Sales), 0) AS TotalSales
+FROM
+  Employees E
+LEFT JOIN
+  Transactions T ON E.ID = T.Employee
+GROUP BY
+  E.ID, E.Name;
+
+
+-- B
+SELECT
+  E.Name
+FROM
+  Employees E
+JOIN
+  (
+    SELECT
+      Employee,
+      SUM(Sales) AS TotalSales
+    FROM
+      Transactions
+    GROUP BY
+      Employee
+    HAVING
+      SUM(Sales) > 5000
+  ) AS Subquery
+ON
+  E.ID = Subquery.Employee;
